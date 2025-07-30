@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'jenkinslave'
+        label 'jenkinsslave'
     }
     tools {
         maven 'maven-3.8.9'

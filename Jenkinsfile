@@ -7,6 +7,8 @@ pipeline {
     }
     environment {
         APPLICATION_NAME = 'eureka'
+        SONAR_URL = "http://34.136.103.101:9000"
+        SONAR_TOKEN = credentials"sonar_creds"
     }
     stages {
         stage('build'){
@@ -21,8 +23,8 @@ pipeline {
                 sh """
                    mvn clean verify sonar:sonar \
                        -Dsonar.projectKey=i27-eureka-sonar \
-                       -Dsonar.host.url=http://34.136.103.101:9000 \
-                       -Dsonar.login=sqp_52fcc4853f57765c05c7c0dac047e8a513a28d10
+                       -Dsonar.host.url=${env.SONAR_URL}\
+                       -Dsonar.login=${env.SONAR_TOKEN}
                 """
             }
         }

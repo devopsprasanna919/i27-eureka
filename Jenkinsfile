@@ -12,7 +12,7 @@ pipeline {
         stage('build'){
             steps {
                 echo "deploying build ${env.APPLICATION} application"
-                sh "mvn clean package -Dskip Tests=true"
+                sh "mvn clean package -DskipTests=true"
             }
         }
         stage('sonar'){

@@ -28,6 +28,11 @@ pipeline {
                        -Dsonar.login=${env.SONAR_TOKEN}
                     """
                 }
+                timeout (time: 2, unit: "MINUTES") {
+                    script {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
             }
         }
         stage('docker'){

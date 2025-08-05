@@ -20,12 +20,19 @@ pipeline {
         stage('sonar'){
             steps {
                 echo "sonar scans"
-                sh """
-                   mvn clean verify sonar:sonar \
+                withSonarEnv('SonarQube') {
+                    sh """
+                    mvn clean verify sonar:sonar \
                        -Dsonar.projectKey=i27-eureka-sonar \
                        -Dsonar.host.url=${env.SONAR_URL}\
                        -Dsonar.login=${env.SONAR_TOKEN}
-                """
+                    """
+                }
+            }
+        }
+        stage('docker'){
+            steps {
+                echo "*** running docker build ***"
             }
         }
     }

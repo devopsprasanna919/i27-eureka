@@ -35,6 +35,14 @@ pipeline {
                 }
             }
         }
+        stage ('FormatBuild'){
+            // existing i27-eureka-0.0.1-SNAPSHOT.jar
+            // Destination i27-eureka-buildnumber-brnachname.jar
+            steps {
+                echo "Testing JAR Source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
+                echo "Testing JAR Destination: i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
+            }
+        }
         stage('docker'){
             steps {
                 echo "*** running docker build ***"

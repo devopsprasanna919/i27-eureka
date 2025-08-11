@@ -11,6 +11,7 @@ pipeline {
         APPLICATION_NAME = 'eureka'
         SONAR_URL = "http://34.136.103.101:9000"
         SONAR_TOKEN = credentials"sonar_creds"
+        DOCKER_HUB = "docker.io/sudhadevops8"
     }
     stages {
         stage('build'){
@@ -45,9 +46,12 @@ pipeline {
                 echo "Testing JAR Destination: i27-${env.APPLICATION_NAME}-${BUILD_NUMBER}-${BRANCH_NAME}.${env.POM_PACKAGING}"
             }
         }
-        stage('docker'){
+        stage('dockerbuildandpush'){
             steps {
                 echo "*** running docker build ***"
+                sh "cp target/i27-${env.APPLICATION_NAME}-${env.POM-VERSION}.${env.POM_PACKAGING} ./.cicd"
+                sh "docker build --no-cache --build-arg JAR_SOURCE=i27-${env.APPLICATION_NAME}-${env.POM_VERSION}".${env.POM_PACKAGING} -t ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:$GIT_COMMIT ./.cicd
+
             }
         }
     }

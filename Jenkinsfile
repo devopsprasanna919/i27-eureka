@@ -58,5 +58,15 @@ pipeline {
                 sh "docker push ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:$GIT_COMMIT"
             }
         }
+        stage('deployingtodev'){
+            steps {
+                echo "****deploying to dev****"
+                withCredentials([usernamePassword(credentialsId: 'sudha_docker_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+               // some block
+               sh "sshpass-p $PASSWORD -v ssh-o StrictHostKeyChecking=no $USERNAME@$docker_vm_ip \"hostname -i\""
+                }
+
+            }
+        }
     }
 }

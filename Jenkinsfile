@@ -79,7 +79,7 @@ pipeline {
         }
         stage('deployingtotest'){
             steps {
-                echo "****deploying to dev****"
+                echo "****deploying to test****"
                 withCredentials([usernamePassword(credentialsId: 'sudha_docker_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                       script {
                         try {
@@ -95,6 +95,26 @@ pipeline {
 
                 }
             }
+            } 
+        stage('deployingtoprod'){
+            steps {
+                echo "****deploying to prod****"
+                withCredentials([usernamePassword(credentialsId: 'sudha_docker_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                      script {
+                        try {
+                        sh "sshpass -p $PASSWORD -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_vm_ip \"docker stop ${env.APPLICATION_NAME}-prod\""
+                        sh "sshpass -p $PASSWORD -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_vm_ip \"docker rm ${env.APPLICATION_NAME}-prod\""
+                        }
+                        catch(err) {
+                            echo "error caught: $err"
+                        }
+                      }
+               // some block
+               sh "sshpass -p $PASSWORD -v ssh -o StrictHostKeyChecking=no $USERNAME@$docker_vm_ip \"docker run --name ${APPLICATION_NAME}-prod -p 8761:8761 -d ${env.DOCKER_HUB}/${env.APPLICATION_NAME}:$GIT_COMMIT \""
+
+                }
+            }
         }
+        
     }
 }

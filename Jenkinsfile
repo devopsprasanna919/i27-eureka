@@ -14,6 +14,33 @@ pipeline {
         DOCKER_HUB = "docker.io/sudhadevops8"
         DOCKER_CREDS = credentials('docker_hub_creds')
     }
+    parameters {
+        choice(
+            name: 'buildOnly',
+            choices: 'no\nyes',
+            description: 'This will only build the application'
+        )
+        choice(
+            name: 'dockerpush',
+            choices: 'no\nyes',
+            description: 'This will only push docker image to registry'
+        )
+        choice(
+            name: 'deployToDev',
+            choices: 'no\nyes',
+            description: 'This will only deploy application to dev environment'
+        )
+        choice(
+            name: 'deployToTest',
+            choices: 'no\nyes',
+            description: 'This will only deploy application to test environment'
+        )
+        choice(
+            name: 'deployToProd',
+            choices: 'no\nyes',
+            description: 'This will only deploy application to prod environment'
+        )
+    }
     stages {
         stage('build'){
             steps {

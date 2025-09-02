@@ -43,6 +43,14 @@ pipeline {
     }
     stages {
         stage('build'){
+            when{
+                anyOf {
+                    expression {
+                        params.buildOnly == 'yes'
+                        param.dockerPush == 'yes'
+                    }
+                }
+            }
             steps {
                 echo "deploying build ${env.APPLICATION} application"
                 sh "mvn clean package -DskipTests=true"
@@ -75,6 +83,13 @@ pipeline {
             }
         }
         stage('dockerbuildandpush'){
+            when {
+                anyOf {
+                    expression {
+                        params.dockerPush: =='yes'
+                    }
+                }
+            }
             steps {
                 echo "*** running docker build ***"
                 sh "cp target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd"
@@ -86,6 +101,13 @@ pipeline {
             }
         }
         stage('deployingtodev'){
+            when {
+                anyOf {
+                    expression {
+                        params.deploytoDev =='yes'
+                    }
+                }
+            }
             steps {
                 echo "****deploying to dev****"
                 withCredentials([usernamePassword(credentialsId: 'sudha_docker_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
@@ -105,6 +127,13 @@ pipeline {
             }
         }
         stage('deployingtotest'){
+            when {
+                anyOf {
+                    expression {
+                        params.deploytoTest =='yes'
+                    }
+                }
+            }
             steps {
                 echo "****deploying to test****"
                 withCredentials([usernamePassword(credentialsId: 'sudha_docker_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
@@ -124,6 +153,13 @@ pipeline {
             }
             } 
         stage('deployingtoprod'){
+            when {
+                anyOf {
+                    expression {
+                        params.deploytoProd =='yes'
+                    }
+                }
+            }
             steps {
                 echo "****deploying to prod****"
                 withCredentials([usernamePassword(credentialsId: 'sudha_docker_creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
